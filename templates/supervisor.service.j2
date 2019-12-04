@@ -3,9 +3,9 @@ Description=Supervisor daemon
 
 [Service]
 Type=forking
-ExecStart=/usr/local/bin/supervisord
-ExecStop=/usr/local/bin/supervisorctl $OPTIONS shutdown
-ExecReload=/usr/local/bin/supervisorctl $OPTIONS reload
+ExecStart={{ supervisor_bin_directory }}/supervisord
+ExecStop={{ supervisor_bin_directory }}/supervisorctl $OPTIONS shutdown
+ExecReload={{ supervisor_bin_directory }}/supervisorctl $OPTIONS reload
 KillMode=process
 Restart=on-failure
 RestartSec=42s

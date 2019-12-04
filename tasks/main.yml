@@ -1,12 +1,18 @@
 # Install and configure Supervisor
 ---
 
-- assert:
-    that:
-      - supervisor_daemon_mode in supervisor_daemon_modes
-      - not supervisor_credentials_enabled|bool or supervisor_password is defined
-      - not supervisor_credentials_enabled|bool or supervisor_username is defined
-      - supervisor_version is defined
+- block:
+    - dynamic_defaults:
+        hostvars: '{{ hostvars[inventory_hostname] }}'
+        defaults: '{{ supervisor_dynamic_defaults }}'
+        must_match: yes
+
+    - assert:
+        that:
+          - supervisor_daemon_mode in supervisor_daemon_modes
+          - not supervisor_credentials_enabled|bool or supervisor_password is defined
+          - not supervisor_credentials_enabled|bool or supervisor_username is defined
+          - supervisor_version is defined
   tags: [supervisor, always]
 
 - block:
@@ -18,9 +24,11 @@
     - name: Install Supervisor Python packages
       pip:
         name: supervisor
-        executable: pip2
+        executable: '{{ supervisor_pip_path }}'
         state: "{{ (supervisor_version == 'latest')|ternary('latest', omit) }}"
+        umask: '{{ supervisor_pip_umask }}'
         version: "{{ (supervisor_version == 'latest')|ternary(omit, supervisor_version) }}"
+      environment: '{{ supervisor_pip_environment }}'
       notify: restart supervisor
   become: yes
   tags: [supervisor, packages]
@@ -33,7 +41,7 @@
         state: directory
       loop:
         - /etc/supervisor/conf.d
-        - /var/log/supervisor/
+        - /var/log/supervisor
 
     - name: Create Supervisor socket group
       group:
