@@ -1,18 +1,12 @@
 # Install and configure Supervisor
 ---
 
-- block:
-    - dynamic_defaults:
-        hostvars: '{{ hostvars[inventory_hostname] }}'
-        defaults: '{{ supervisor_dynamic_defaults }}'
-        must_match: yes
-
-    - assert:
-        that:
-          - supervisor_daemon_mode in supervisor_daemon_modes
-          - not supervisor_credentials_enabled|bool or supervisor_password is defined
-          - not supervisor_credentials_enabled|bool or supervisor_username is defined
-          - supervisor_version is defined
+- assert:
+    that:
+      - supervisor_daemon_mode in supervisor_daemon_modes
+      - not supervisor_credentials_enabled|bool or supervisor_password is defined
+      - not supervisor_credentials_enabled|bool or supervisor_username is defined
+      - supervisor_version is defined
   tags: [supervisor, always]
 
 - block:

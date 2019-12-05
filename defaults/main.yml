@@ -1,15 +1,9 @@
-supervisor_dynamic_defaults:
-
-  linux:
-    supervisor_bin_directory: /usr/local/bin
-
-  redhat-7.*:
-    supervisor_bin_directory: /usr/bin
-
 supervisor_credentials_enabled: yes
 supervisor_dod_time: 10
 supervisor_socket_group: supervisor
 # supervisor_version: 3.3.4  # 10/12/2018
+
+supervisor_bin_directory: "{{ supervisor_pip_path|dirname or '/usr/bin' }}"
 
 supervisor_pip_path: '{{ python_pip_path }}'
 supervisor_pip_umask: '{{ python_pip_umask }}'
