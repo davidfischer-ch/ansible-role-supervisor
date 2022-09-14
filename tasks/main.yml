@@ -31,7 +31,7 @@
     - name: Create Supervisor directories
       file:
         name: '{{ item }}'
-        mode: 0755
+        mode: '755'
         state: directory
       loop:
         - /etc/supervisor/conf.d
@@ -47,7 +47,7 @@
       template:
         src: supervisord.conf.j2
         dest: /etc/supervisor/supervisord.conf
-        mode: 0644
+        mode: '644'
       notify: restart supervisor
 
     - name: Symlink Configuration for supervisorctl
