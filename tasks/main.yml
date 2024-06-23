@@ -1,7 +1,7 @@
 # Install and configure Supervisor
 ---
 
-- assert:
+- ansible.builtin.assert:
     that:
       - supervisor_daemon_mode in supervisor_daemon_modes
       - not supervisor_credentials_enabled|bool or supervisor_password is defined
@@ -11,12 +11,12 @@
 
 - block:
     - name: Remove Supervisor package
-      package:
+      ansible.builtin.package:
         name: supervisor
         state: absent
 
     - name: Install Supervisor Python packages
-      pip:
+      ansible.builtin.pip:
         name: supervisor
         executable: '{{ supervisor_pip_path }}'
         state: "{{ (supervisor_version == 'latest')|ternary('latest', omit) }}"
@@ -24,12 +24,12 @@
         version: "{{ (supervisor_version == 'latest')|ternary(omit, supervisor_version) }}"
       environment: '{{ supervisor_pip_environment }}'
       notify: restart supervisor
-  become: yes
+  become: '{{ do_become }}'
   tags: [supervisor, packages]
 
 - block:
     - name: Create Supervisor directories
-      file:
+      ansible.builtin.file:
         name: '{{ item }}'
         mode: '755'
         state: directory
@@ -38,20 +38,20 @@
         - /var/log/supervisor
 
     - name: Create Supervisor socket group
-      group:
+      ansible.builtin.group:
         name: '{{ supervisor_socket_group }}'
         state: present
-        system: yes
+        system: true
 
     - name: Configure Supervisor
-      template:
+      ansible.builtin.template:
         src: supervisord.conf.j2
         dest: /etc/supervisor/supervisord.conf
         mode: '644'
       notify: restart supervisor
 
     - name: Symlink Configuration for supervisorctl
-      file:
+      ansible.builtin.file:
         src: /etc/supervisor/supervisord.conf
         dest: /etc/supervisord.conf
         state: link
@@ -59,13 +59,15 @@
     - include_tasks: setup-service-{{ supervisor_daemon_mode }}.yml
 
     - meta: flush_handlers
-  become: yes
+  become: '{{ do_become }}'
   tags: [supervisor, config]
 
 - name: Start Supervisor service
-  service:
+  ansible.builtin.service:
     name: supervisor
-    enabled: yes
+    enabled: true
     state: started
-  become: yes
+  become: '{{ do_become }}'
   tags: [supervisor, services]
+
+...

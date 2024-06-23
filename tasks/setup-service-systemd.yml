@@ -1,12 +1,14 @@
 ---
 
 - name: Configure Supervisor service
-  template:
+  ansible.builtin.template:
     src: supervisor.service.j2
     dest: /etc/systemd/system/supervisor.service
     mode: '755'
-  become: yes
+  become: '{{ do_become }}'
   notify:
     - reload systemd
     - restart supervisor
   tags: [supervisor, config] # FIXME Remove when this is fixed https://github.com/ansible/ansible/issues/30882
+
+...

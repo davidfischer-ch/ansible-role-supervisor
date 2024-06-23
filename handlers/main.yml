@@ -1,13 +1,15 @@
 ---
 
 - name: reload systemd
-  command:
+  ansible.builtin.command:
     systemctl daemon-reload
-  become: yes
+  become: '{{ do_become }}'
 
 - name: restart supervisor
-  service:
+  ansible.builtin.service:
     name: supervisor
     state: restarted
     use: '{{ supervisor_daemon_mode }}'
-  become: yes
+  become: '{{ do_become }}'
+
+...
