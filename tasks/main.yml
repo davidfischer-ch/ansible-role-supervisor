@@ -18,6 +18,7 @@
     - name: Install Supervisor Python packages
       ansible.builtin.pip:
         name: supervisor
+        break_system_packages: true
         executable: '{{ supervisor_pip_path }}'
         state: "{{ (supervisor_version == 'latest')|ternary('latest', omit) }}"
         umask: '{{ supervisor_pip_umask }}'
