@@ -9,8 +9,9 @@ supervisor_socket_group: supervisor
 
 supervisor_bin_directory: "{{ supervisor_pip_path|dirname or '/usr/bin' }}"
 
+supervisor_pip_break_system_packages: '{{ python_pip_break_system_packages }}'
+supervisor_pip_environment: '{{ python_pip_environment }}'
 supervisor_pip_path: '{{ python_pip_path }}'
 supervisor_pip_umask: '{{ python_pip_umask }}'
-supervisor_pip_environment: '{{ python_pip_environment }}'
 
 ...
